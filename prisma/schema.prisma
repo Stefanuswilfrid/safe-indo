@@ -6,10 +6,56 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model Event {
+  id                Int       @id @default(autoincrement())
+  title             String
+  description       String?
+  lat               Float
+  lng               Float
+  source            String
+  url               String?   @unique
+  verified          Boolean   @default(false)
+  type              String
+  extractedLocation String?
+  googleMapsUrl     String?
+  originalCreatedAt DateTime? // Original creation time from source (TikTok video, tweet, etc.)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  // embedding         Unsupported("vector")? // Temporarily disabled - requires pgvector extension
+
+  @@index([createdAt], map: "idx_events_createdAt")
+  @@index([type], map: "idx_events_type")
+  @@index([createdAt, type], map: "idx_events_createdAt_type")
+  @@map("events")
+}
+
+model WarningMarker {
+  id                Int      @id @default(autoincrement())
+  tweetId           String   @unique
+  text              String
+  createdAt         DateTime
+  bookmarks         Int      @default(0)
+  favorites         Int      @default(0)
+  retweets          Int      @default(0)
+  views             String   @default("0")
+  quotes            Int      @default(0)
+  replies           Int      @default(0)
+  userInfo          Json
+  extractedLocation String?
+  lat               Float?
+  lng               Float?
+  confidenceScore   Float?
+  verified          Boolean  @default(false)
+  processedAt       DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([createdAt], map: "idx_warning_markers_createdAt")
+  @@map("warning_markers")
 }
