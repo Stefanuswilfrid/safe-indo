@@ -26,3 +26,27 @@ export function withAdminAuth(handler: (request: NextRequest, ...args: unknown[]
     return handler(request, ...args);
   };
 }
+
+export function getCorsHeaders() {
+  const origin = process.env.NODE_ENV === 'production'
+    ? 'https://safe.100ai.id' // Your actual custom domain
+    : 'http://localhost:3000';
+
+  return {
+    'Access-Control-Allow-Origin': origin,
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-api-key, x-scrape-secret',
+    'Access-Control-Max-Age': '86400', // 24 hours
+    'Access-Control-Allow-Credentials': 'true',
+  };
+}
+
+// Handle CORS preflight requests
+export function handleCors(request: NextRequest) {
+  if (request.method === 'OPTIONS') {
+    return new NextResponse(null, {
+      status: 200,
+      headers: getCorsHeaders()
+    });
+  }
+}

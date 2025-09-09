@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { authenticateRequest, handleCors, getCorsHeaders } from '@/lib/auth-middleware';
 import { smartGeocodeLocation } from '@/lib/smart-geocoding';
 import { generateEventEmbedding } from '@/lib/vector-search';
+import { getCorsHeaders, handleCors } from '@/lib/admin-middleware';
 
 // Google Maps API proxy functions
 async function googlePlacesAutocomplete(query: string) {
@@ -115,10 +116,10 @@ export async function POST(request: NextRequest) {
 
   try {
     // Authenticate request (optional for manual entry)
-    const auth = authenticateRequest(request);
-    if (!auth.isValid) {
-      console.log('⚠️ Anonymous road closure submission');
-    }
+    // const auth = authenticateRequest(request);
+    // if (!auth.isValid) {
+    //   console.log('⚠️ Anonymous road closure submission');
+    // }
 
     const data: RoadClosureData = await request.json();
 
