@@ -59,3 +59,18 @@ model WarningMarker {
   @@index([createdAt], map: "idx_warning_markers_createdAt")
   @@map("warning_markers")
 }
+
+model GeocodeCache {
+  id               Int      @id @default(autoincrement())
+  locationText     String   @unique
+  latitude         Float
+  longitude        Float
+  formattedAddress String?
+  source           String
+  confidenceScore  Float?
+  createdAt        DateTime @default(now())
+  lastUsedAt       DateTime @default(now())
+  usageCount       Int      @default(1)
+
+  @@map("geocode_cache")
+}

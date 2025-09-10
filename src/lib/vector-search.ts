@@ -2,11 +2,11 @@ import { PrismaClient } from '@prisma/client';
 import { OpenAI } from 'openai';
 
 
-const prisma = new PrismaClient();
-const openai = new OpenAI({
-  baseURL: "https://openrouter.ai/api/v1",
-  apiKey: process.env.OPENROUTER_API_KEY
-});
+// const prisma = new PrismaClient();
+// const openai = new OpenAI({
+//   baseURL: "https://openrouter.ai/api/v1",
+//   apiKey: process.env.OPENROUTER_API_KEY
+// });
 
 export interface SearchResult {
   id: number;
