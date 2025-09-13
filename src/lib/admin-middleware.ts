@@ -29,7 +29,7 @@ export function withAdminAuth(handler: (request: NextRequest, ...args: unknown[]
 
 export function getCorsHeaders() {
   const origin = process.env.NODE_ENV === 'production'
-    ? 'https://safe.100ai.id' // Your actual custom domain
+    ? '' // Your actual custom domain
     : 'http://localhost:3000';
 
   return {
