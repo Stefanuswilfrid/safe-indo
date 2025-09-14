@@ -1,4 +1,5 @@
 'use client';
+import { formatTime } from "@/utils/date";
 import { useRef, useState } from "react";
 import ReactMarkdown from 'react-markdown';
 
@@ -32,6 +33,93 @@ export default function ChatBot() {
   const [isMobile, setIsMobile] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleSendMessage = async () => {
+    if (!inputValue.trim() || isLoading) return;
+
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      text: inputValue.trim(),
+      sender: 'user',
+      timestamp: new Date()
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setInputValue('');
+    setIsLoading(true);
+
+    // Add loading message
+    const loadingMessage: Message = {
+      id: `loading-${Date.now()}`,
+      text: 'Sedang memproses...',
+      sender: 'bot',
+      timestamp: new Date(),
+      isLoading: true
+    };
+
+    setMessages(prev => [...prev, loadingMessage]);
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: userMessage.text,
+          context: {
+            currentView: 'jakarta',
+            timeRange: 'last_48h'
+          }
+        }),
+      });
+
+      const data = await response.json();
+
+      // Remove loading message and add actual response
+      setMessages(prev => prev.filter(msg => !msg.isLoading));
+
+      if (data.success) {
+        const botResponse: Message = {
+          id: `response-${Date.now()}`,
+          text: data.response.text,
+          sender: 'bot',
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, botResponse]);
+      } else {
+        const errorResponse: Message = {
+          id: `error-${Date.now()}`,
+          text: 'Maaf, terjadi kesalahan. Silakan coba lagi.',
+          sender: 'bot',
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, errorResponse]);
+      }
+
+    } catch (error) {
+      console.error('Chat error:', error);
+      // Remove loading message
+      setMessages(prev => prev.filter(msg => !msg.isLoading));
+
+      const errorResponse: Message = {
+        id: `error-${Date.now()}`,
+        text: 'Maaf, tidak dapat terhubung ke server. Periksa koneksi internet Anda.',
+        sender: 'bot',
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, errorResponse]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
 
   
   return (

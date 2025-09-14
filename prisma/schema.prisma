@@ -74,3 +74,32 @@ model GeocodeCache {
 
   @@map("geocode_cache")
 }
+
+model HoaxFactCheck {
+  id                  String   @id @default(cuid())
+  rssGuid             String   @unique
+  title               String
+  originalClaim       String?
+  hoaxCategory        String // 'SALAH' or 'PENIPUAN'
+  verificationMethod  String?
+  investigationResult String?
+  authorName          String?
+  sourceUrl           String   @unique
+  publicationDate     DateTime
+  contentHash         String?
+  processedAt         DateTime @default(now())
+  isActive            Boolean  @default(true)
+
+  // Vector embeddings stored as JSONB array for Neon compatibility
+  embedding Json?
+
+  // Metadata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([hoaxCategory], map: "idx_hoax_category")
+  @@index([publicationDate], map: "idx_hoax_publication_date")
+  @@index([isActive], map: "idx_hoax_active")
+  @@index([rssGuid], map: "idx_hoax_guid")
+  @@map("hoax_fact_checks")
+}

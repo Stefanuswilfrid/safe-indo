@@ -1,5 +1,6 @@
 "use client";
 import { useRef } from "react";
+import ChatBot from "./ChatBot";
 
 export default function ProtestMap() {
     const mapContainer = useRef<HTMLDivElement>(null);

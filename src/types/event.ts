@@ -36,32 +36,12 @@ export interface Event {
   };
 }
 
-export interface ChatRequest {
-  message: string;
-  context?: {
-    currentView?: string;
-    timeRange?: string;
-    includeHoaxes?: boolean;
-  };
-}
+
 
 export interface ChatContext {
   currentView?: string;
   timeRange?: string;
   includeHoaxes?: boolean;
-}
-
-export interface HoaxResult {
-  id: string;
-  title: string;
-  originalClaim?: string | null;
-  hoaxCategory: string;
-  verificationMethod?: string | null;
-  investigationResult?: string | null;
-  authorName?: string | null;
-  sourceUrl: string;
-  publicationDate: Date;
-  similarity?: number;
 }
 
 export interface WarningMarker {
@@ -79,19 +59,3 @@ export interface WarningMarker {
   retweets: number | null;
 }
 
-export interface EventData {
-  id: number;
-  title: string;
-  description: string | null;
-  lat: number;
-  lng: number;
-  type: string;
-  extractedLocation: string | null;
-  createdAt: Date;
-  verified: boolean;
-  source: string;
-  url?: string | null;
-  confidenceScore?: number | null;
-  views?: string | number | null;
-  retweets?: number | null;
-}
