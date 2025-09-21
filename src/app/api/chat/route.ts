@@ -1,7 +1,15 @@
 import { getCorsHeaders, handleCors } from '@/lib/admin-middleware';
+import { hoaxProcessor } from '@/lib/hoax-data-processor';
 import { prisma } from '@/lib/prisma';
 import { formatTimeAgo } from '@/utils/date';
+import OpenAI from 'openai';
+
 import { NextRequest, NextResponse } from 'next/server';
+import { ChatContext } from '@/types/event';
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY!,
+});
 export interface ChatRequest {
   message: string;
   context?: {
@@ -65,7 +73,7 @@ export async function GET(request: NextRequest) {
   // Handle CORS preflight
   const corsResponse = handleCors(request);
   if (corsResponse) return corsResponse;
-
+  
   return NextResponse.json({
     success: true,
     message: "Safe Indonesia Chat API - POST your questions here!",
@@ -421,7 +429,7 @@ FORMAT JAWABAN:
 - Jika tidak ada link, akan muncul "Tidak ada link tersedia"`;
 
     const response = await openai.chat.completions.create({
-      model: "meta-llama/llama-3.1-8b-instruct",
+      model: "gpt-5",
       messages: [
         {
           role: "system",
@@ -432,9 +440,9 @@ FORMAT JAWABAN:
           content: message
         }
       ],
-      max_tokens: 1000,
-      temperature: 0.7
+      max_completion_tokens: 1000,
     });
+    console.log('LLM response:', response.choices[0]?.message);
 
     const llmResponse = response.choices[0]?.message?.content || "Maaf, saya tidak dapat memproses pertanyaan Anda saat ini.";
 
