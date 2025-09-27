@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { extractLocationFromTweet } from '@/lib/openrouter';
 import { smartGeocodeLocation } from '@/lib/smart-geocoding';
+import { extractLocationFromTweet } from '@/lib/openai';
 
 export async function POST(request: NextRequest) {
   try {
