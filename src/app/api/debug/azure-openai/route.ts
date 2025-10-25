@@ -35,14 +35,13 @@ export async function GET(request: NextRequest) {
         message: 'OpenRouter connection is working'
       }, { headers: getCorsHeaders() });
     } else {
-      console.error('❌ OpenRouter connection failed:', result.error);
+      console.error('❌ OpenRouter connection failed:', result);
       return NextResponse.json({
         success: false,
         error: result.error,
         message: 'OpenRouter connection failed'
       }, {
         status: 500,
-        headers: getCorsHeaders()
       });
     }
 

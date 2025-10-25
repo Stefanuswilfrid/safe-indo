@@ -762,14 +762,37 @@ export async function testOpenRouterConnection(): Promise<{success: boolean, err
     });
 
     const completion = await client.chat.completions.create({
-      model: "gpt-oss-20b:free",
-      messages: [{ role: "user", content: 'Say "Hello World" in exactly 2 words.' }],
-      max_tokens: 10,
+      model: "meta-llama/llama-3.2-3b-instruct:free",
+      messages: [{ role: "user", content: 'Hello' }],
+      max_tokens: 5,
       temperature: 0.1
     });
 
-    const content = completion.choices[0]?.message?.content?.trim();
-    return { success: !!content };
+    const message = completion.choices[0]?.message;
+    const content = message?.content?.trim();
+    const refusal = message?.refusal;
+    
+    console.log('completion', message);
+    console.log('content', content);
+    console.log('refusal', refusal);
+
+    // Check if the model refused to respond
+    if (refusal) {
+      return { 
+        success: false, 
+        error: `Model refused to respond: ${refusal}` 
+      };
+    }
+
+    // Check if we got a valid response
+    if (!content || content.length === 0) {
+      return { 
+        success: false, 
+        error: 'Empty response from model' 
+      };
+    }
+
+    return { success: true };
 
   } catch (error) {
     return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
