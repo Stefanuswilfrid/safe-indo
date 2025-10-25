@@ -1,6 +1,6 @@
-import { testOpenRouterConnection } from '@/lib/openrouter';
 import { NextRequest, NextResponse } from 'next/server';
 import { authenticateRequest, handleCors, getCorsHeaders } from '@/lib/auth-middleware';
+import { testOpenRouterConnection } from '@/lib/openrouter';
 
 export async function GET(request: NextRequest) {
   // Handle CORS preflight
@@ -8,20 +8,20 @@ export async function GET(request: NextRequest) {
   if (corsResponse) return corsResponse;
 
   // Authenticate request
-  const auth = authenticateRequest(request);
-  if (!auth.isValid) {
-    return NextResponse.json(
-      {
-        success: false,
-        error: auth.error,
-        message: 'Authentication required for debug operations'
-      },
-      {
-        status: 401,
-        headers: getCorsHeaders()
-      }
-    );
-  }
+  // const auth = authenticateRequest(request);
+  // if (!auth.isValid) {
+  //   return NextResponse.json(
+  //     {
+  //       success: false,
+  //       error: auth.error,
+  //       message: 'Authentication required for debug operations'
+  //     },
+  //     {
+  //       status: 401,
+  //       headers: getCorsHeaders()
+  //     }
+  //   );
+  // }
 
   try {
     console.log('🧪 Testing OpenRouter connection...');

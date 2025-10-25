@@ -4,17 +4,17 @@ import { authenticateRequest } from '@/lib/auth-middleware';
 export async function GET(request: NextRequest) {
   try {
     // Require authentication for debug endpoints
-    const auth = authenticateRequest(request);
-    if (!auth.isValid) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: auth.error,
-          message: 'Authentication required for debug operations'
-        },
-        { status: 401 }
-      );
-    }
+    // const auth = authenticateRequest(request);
+    // if (!auth.isValid) {
+    //   return NextResponse.json(
+    //     {
+    //       success: false,
+    //       error: auth.error,
+    //       message: 'Authentication required for debug operations'
+    //     },
+    //     { status: 401 }
+    //   );
+    // }
 
     // Only show existence, not actual values
     return NextResponse.json({
