@@ -62,7 +62,7 @@ function generateSimpleEmbedding(text: string): number[] {
     return a & a;
   }, 0);
 
-  const vector = [];
+  const vector: number[] = [];
   for (let i = 0; i < 1536; i++) {
     vector.push((Math.sin(hash + i) + 1) / 2);
   }
@@ -111,7 +111,7 @@ export async function POST(request: NextRequest) {
 
     // Check if this is a hoax-related query
     const isHoaxQuery = detectHoaxQuery(message);
-    let hoaxResults = null;
+    let hoaxResults: HoaxResult[] | null = null;
 
     if (isHoaxQuery || context?.includeHoaxes) {
       hoaxResults = await searchRelevantHoaxes(message);
