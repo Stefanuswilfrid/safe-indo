@@ -392,7 +392,7 @@ Return ONLY valid JSON:`;
       temperature: 0.1
     });
 
-    let textResult = null;
+    let textResult: any = null;
     const textContent = textCompletion.choices[0]?.message?.content?.trim();
 
     if (textContent) {
@@ -405,7 +405,7 @@ Return ONLY valid JSON:`;
     }
 
     // Now try to extract location from the cover image using vision model
-    let imageResult = null;
+    let imageResult: any = null;
 
     if (cover) {
       console.log(`🖼️ Analyzing cover image: ${cover}`);

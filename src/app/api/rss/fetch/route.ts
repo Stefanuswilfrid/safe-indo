@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { rssFetcher } from '@/lib/rss-fetcher';
 import { hoaxParser } from '@/lib/hoax-content-parser';
 import { hoaxProcessor } from '@/lib/hoax-data-processor';
+import type { HoaxFactCheck } from '@/types/hoax';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 
@@ -101,7 +102,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Step 3: Parse items into hoax data
-    const parsedHoaxes = [];
+    const parsedHoaxes: HoaxFactCheck[] = [];
     for (const item of newItems) {
       try {
         const rssItem = {

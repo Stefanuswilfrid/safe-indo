@@ -73,7 +73,7 @@ export interface APIKeyConfig {
       }
   
       // Rotate through keys to distribute load evenly
-      const selectedKeys = [];
+      const selectedKeys: APIKeyConfig[] = [];
       for (let i = 0; i < 3; i++) {
         const keyIndex = (this.keyRotationIndex + i) % availableKeys.length;
         selectedKeys.push(availableKeys[keyIndex]);
@@ -98,7 +98,7 @@ export interface APIKeyConfig {
       }
   
       // Use different keys than peak to distribute load
-      const selectedKeys = [];
+      const selectedKeys: APIKeyConfig[] = [];
       for (let i = 0; i < 2; i++) {
         const keyIndex = (this.keyRotationIndex + i) % availableKeys.length;
         selectedKeys.push(availableKeys[keyIndex]);

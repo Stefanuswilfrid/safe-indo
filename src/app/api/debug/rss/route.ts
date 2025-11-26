@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
     ]);
 
     // Parse cached new items if they exist
-    let parsedNewItems = null;
+    let parsedNewItems: any[] | string | null = null;
     if (newItems) {
       try {
         parsedNewItems = JSON.parse(newItems as string);
@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    let parsedMetrics = null;
+    let parsedMetrics: any | null = null;
     if (lastMetrics) {
       try {
         parsedMetrics = JSON.parse(lastMetrics as string);
@@ -43,7 +43,13 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    let timeSinceLastFetch = null;
+    type TimeSinceLastFetch = {
+      milliseconds: number;
+      minutes: number;
+      shouldSkip: boolean;
+    };
+
+    let timeSinceLastFetch: TimeSinceLastFetch | null = null;
     if (lastSuccessfulFetch) {
       const lastFetchTime = new Date(lastSuccessfulFetch as string);
       const now = new Date();
