@@ -117,8 +117,11 @@ export interface APIKeyConfig {
     async makeAPICall(keyConfig: APIKeyConfig, request: ScrapeRequest): Promise<ScrapeResult> {
       try {
         const { keyword, cursor = 0, count = 30 } = request;
-        
-        const url = `https://tiktok-scraper7.p.rapidapi.com/feed/search?keywords=${encodeURIComponent(keyword)}&region=id&count=${count}&cursor=${cursor}&publish_time=1&sort_type=0`;
+
+        // Target Australia explicitly and remove the 24h limit:
+        // - region=au → focus on Australian content (Melbourne, etc.)
+        // - publish_time=0 → no time restriction (API returns recent/top results, not just today)
+        const url = `https://tiktok-scraper7.p.rapidapi.com/feed/search?keywords=${encodeURIComponent(keyword)}&region=au&count=${count}&cursor=${cursor}&publish_time=0&sort_type=0`;
   
         const options = {
           method: 'GET',
