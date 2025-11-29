@@ -3,10 +3,10 @@
     "outputDirectory": ".next",
     "framework": "nextjs",
     "functions": {
-      "src/app/api/**/route.ts": { "maxDuration": 800 },
-      "src/app/api/rss/fetch/route.ts": { "maxDuration": 800 },
-      "src/app/api/rss/cron/route.ts": { "maxDuration": 800 },
-      "src/app/api/scrape/cron/route.ts": { "maxDuration": 800 }
+      "src/app/api/**/route.ts": { "maxDuration": 60 },
+      "src/app/api/rss/fetch/route.ts": { "maxDuration": 60 },
+      "src/app/api/rss/cron/route.ts": { "maxDuration": 60 },
+      "src/app/api/scrape/cron/route.ts": { "maxDuration": 60 }
     },
     "crons": [
       { "path": "/api/scrape/cron", "schedule": "0 12-23,0-1 * * *" },
