@@ -498,7 +498,7 @@ export async function GET(request: NextRequest) {
       videos: videos.length,
       processed: processedCount,
       date: dateToday,
-      keyword: `lokasi demo ${dateToday}`,
+      keywords: 'melbourne incident keywords',
       totalTime: totalTime,
       avgTimePerVideo: avgTimePerVideo,
       isPeakHour: rapidAPIManager.isPeakHour(),
@@ -507,7 +507,7 @@ export async function GET(request: NextRequest) {
         remainingCalls: finalRemainingCalls,
         resetInSeconds: Math.ceil(finalTimeUntilReset / 1000)
       },
-      message: `Processed ${processedCount} demo locations from ${videos.length} TikTok videos in ${totalTime}ms`
+      message: `Processed ${processedCount} incident locations from ${videos.length} TikTok videos in ${totalTime}ms`
     }, { headers: getCorsHeaders() });
 
   } catch (error) {

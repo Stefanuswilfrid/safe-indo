@@ -18,20 +18,15 @@ export interface DetailedLocationResult {
 
 export async function extractLocationFromArticle(title: string, content: string): Promise<LocationResult> {
   try {
-    if (!process.env.OPENROUTER_API_KEY) {
+    if (!process.env.OPENAI_API_KEY) {
       return {
         success: false,
-        error: 'OpenRouter API key not configured'
+        error: 'OpenAI API key not configured'
       };
     }
 
     const client = new OpenAI({
-      baseURL: "https://openrouter.ai/api/v1",
-      apiKey: process.env.OPENROUTER_API_KEY,
-      defaultHeaders: {
-        "HTTP-Referer": "https://safe-indo.vercel.app", // Optional. Site URL for rankings on openrouter.ai.
-        "X-Title": "Safe Indo", // Optional. Site title for rankings on openrouter.ai.
-      },
+      apiKey: process.env.OPENAI_API_KEY,
     });
 
     const prompt = `Extract the specific location mentioned in this Indonesian protest news/video. Focus on finding the exact place where the protest is happening.
@@ -254,20 +249,15 @@ function applyLocationValidation(result: DetailedLocationResult): DetailedLocati
 
 async function extractDetailedLocationFromTikTokInternal(videoData: any): Promise<DetailedLocationResult> {
   try {
-    if (!process.env.OPENROUTER_API_KEY) {
+    if (!process.env.OPENAI_API_KEY) {
       console.error('❌ OpenRouter API key not configured');
       return {
         success: false,
-        error: 'OpenRouter API key not configured'
+        error: 'OpenAI API key not configured'
       };
     }
     const client = new OpenAI({
-      baseURL: "https://openrouter.ai/api/v1",
-      apiKey: process.env.OPENROUTER_API_KEY,
-      defaultHeaders: {
-        "HTTP-Referer": "http://localhost:3000",
-        "X-Title": "Safe Jakarta",
-      },
+      apiKey: process.env.OPENAI_API_KEY,
     });
 
     const { title, author, music_info, region, cover } = videoData;
@@ -747,17 +737,12 @@ export async function extractDetailedLocationFromTikTok(videoData: any): Promise
 // Debug function to test OpenRouter connection
 export async function testOpenRouterConnection(): Promise<{success: boolean, error?: string}> {
   try {
-    if (!process.env.OPENROUTER_API_KEY) {
+    if (!process.env.OPENAI_API_KEY) {
       return { success: false, error: 'API key not configured' };
     }
 
     const client = new OpenAI({
-      baseURL: "https://openrouter.ai/api/v1",
-      apiKey: process.env.OPENROUTER_API_KEY,
-      defaultHeaders: {
-        "HTTP-Referer": "https://safe-indo.vercel.app",
-        "X-Title": "Safe Indo",
-      },
+      apiKey: process.env.OPENAI_API_KEY,
     });
 
     const completion = await client.chat.completions.create({

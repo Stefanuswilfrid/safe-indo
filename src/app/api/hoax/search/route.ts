@@ -15,10 +15,9 @@ const ratelimit = new Ratelimit({
   limiter: Ratelimit.slidingWindow(100, '1 m'), // 100 requests per minute
 });
 
-// OpenAI for query embedding generation
+// OpenAI for query embedding generation (direct OpenAI API)
 const openai = new OpenAI({
-  baseURL: "https://openrouter.ai/api/v1",
-  apiKey: process.env.OPENROUTER_API_KEY
+  apiKey: process.env.OPENAI_API_KEY
 });
 
 interface SearchRequest {
