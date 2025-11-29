@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
     // Get the base URL for internal API calls - hardcode for cron jobs since Vercel serverless 
     // runs on internal infrastructure with different domain routing
     const baseUrl = process.env.NODE_ENV === 'production' 
-      ? 'https://safe.100ai.id'  // Your actual custom domain
+      ? 'https://safe-indo.vercel.app'  // Your actual custom domain
       : 'http://localhost:3000';
 
     console.log('🔗 Calling main scraping endpoint...');

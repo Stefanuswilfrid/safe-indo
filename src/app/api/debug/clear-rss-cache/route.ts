@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
     console.log(' Triggering immediate RSS fetch...');
     //to be replaced with the actual base url
     const baseUrl = process.env.NODE_ENV === 'production'
-      ? ''
+      ? 'https://safe-indo.vercel.app'
       : 'http://localhost:3000';
       
     const fetchResponse = await fetch(`${baseUrl}/api/rss/cron`);
