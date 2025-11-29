@@ -412,15 +412,16 @@ export async function GET(request: NextRequest) {
     const year = today.getFullYear();
     const dateToday = `${day}/${month}/${year}`;
 
-    // Scrape TikTok videos with simple keyword
+    // Scrape TikTok videos with our Melbourne keywords
     let videos = await scrapeTikTokVideos(dateToday);
-    console.log(`📹 Found ${videos.length} TikTok videos for "lokasi demo ${dateToday}"`);
+    console.log(`📹 Found ${videos.length} TikTok videos for incident search`);
 
-    // If called from cron, limit processing to keep execution under platform limits
-    if (isInternalCronCall && safeLimit) {
-      videos = videos.slice(0, safeLimit);
-      console.log(`✂️  Limiting processing to first ${videos.length} videos due to cron limit`);
-    }
+    // Hard cap the number of videos we pass through the heavy LLM/location pipeline
+    // to avoid blowing OpenAI token limits in a single run.
+    const MAX_LLM_VIDEOS = 3;
+    const originalCount = videos.length;
+    videos = videos.slice(0, Math.min(MAX_LLM_VIDEOS, safeLimit || MAX_LLM_VIDEOS));
+    console.log(`✂️  Limiting processing to first ${videos.length} of ${originalCount} videos to control LLM token usage`);
 
     // Choose a smaller batch size for cron-triggered runs
     const dynamicBatchSize = isInternalCronCall ? 2 : 3;
