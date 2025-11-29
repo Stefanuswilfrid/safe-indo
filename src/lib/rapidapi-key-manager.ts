@@ -56,6 +56,19 @@ export interface APIKeyConfig {
           };
         })
         .filter(Boolean) as APIKeyConfig[];
+
+      // Fallback: if no numbered keys are configured but RAPIDAPI_KEY exists,
+      // use it as a single generic key so scraping still works.
+      if (this.keys.length === 0 && process.env.RAPIDAPI_KEY) {
+        console.warn('⚠️ No RAPIDAPI_KEY_ONE..FIVE found; using RAPIDAPI_KEY as a single key');
+        this.keys.push({
+          key: process.env.RAPIDAPI_KEY,
+          name: 'KEY_DEFAULT',
+          isActive: true,
+          monthlyLimit: 300,
+          callsThisMonth: 0
+        });
+      }
   
       console.log(`🔑 Initialized ${this.keys.length} RapidAPI keys:`, 
         this.keys.map(k => k.name).join(', '));
