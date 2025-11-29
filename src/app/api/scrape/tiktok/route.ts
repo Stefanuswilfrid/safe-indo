@@ -22,10 +22,12 @@ import { authenticateScrapeRequest, getCorsHeaders, handleCors } from '@/lib/aut
 async function scrapeTikTokVideos(dateToday: string): Promise<Video[]> {
   try {
     console.log(`📅 Today's date: ${dateToday}`);
-    console.log(`🔍 Searching for today's demo locations in Indonesia...`);
+    console.log(`🔍 Searching for Melbourne incidents...`);
 
-    // Simple keyword: "lokasi demo" + today's date
-    const keyword = `lokasi demo ${dateToday}`;
+    // Configurable keyword template. Replace {date} with today's date.
+    // Example: "melbourne incident {date}"
+    const keywordTemplate = process.env.SCRAPE_KEYWORD_TEMPLATE || 'melbourne incident {date}';
+    const keyword = keywordTemplate.replace('{date}', dateToday);
     console.log(`🔎 Searching: "${keyword}"`);
 
     // Apply rate limiting before making API calls
@@ -204,7 +206,7 @@ async function processTikTokVideo(video: Video): Promise<boolean> {
           url: tiktokUrl
         },
         update: {
-          title: `Demo Activity - ${video.author.nickname}`,
+          title: `Incident - ${video.author.nickname}`,
           description: video.title,
           lat: bestGeocodeResult.lat!,
           lng: bestGeocodeResult.lng!,
@@ -215,14 +217,14 @@ async function processTikTokVideo(video: Video): Promise<boolean> {
           updatedAt: new Date()
         },
         create: {
-          title: `Demo Activity - ${video.author.nickname}`,
+          title: `Incident - ${video.author.nickname}`,
           description: video.title,
           lat: bestGeocodeResult.lat!,
           lng: bestGeocodeResult.lng!,
           source: 'TikTok',
           url: tiktokUrl,
           verified: false,
-          type: 'protest',
+          type: 'warning',
           extractedLocation: bestLocation,
           googleMapsUrl: googleMapsUrl,
           originalCreatedAt: originalCreatedAt
