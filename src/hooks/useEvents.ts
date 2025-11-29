@@ -18,10 +18,10 @@ export const useEvents = () => {
       // Use the passed timeFilter or fall back to state
       const activeTimeFilter = customTimeFilter !== undefined ? customTimeFilter : timeFilter;
       
-      // Fetch regular events, road closures, and warning markers with time filter
+      // Fetch regular events (all types), road closures, and warning markers with time filter
       const timeParam = activeTimeFilter > 0 ? `&hours=${activeTimeFilter}` : '';
       const [eventsResponse, roadClosuresResponse, warningMarkersResponse] = await Promise.all([
-        fetch(`/api/events?type=protest${timeParam}`),
+        fetch(`/api/events?${timeParam.startsWith('&') ? timeParam.slice(1) : timeParam}`),
         // For road closures: if activeTimeFilter is 0 (All), don't send hours param, otherwise send the activeTimeFilter value
         fetch(`/api/road-closures${activeTimeFilter > 0 ? `?hours=${activeTimeFilter}` : ''}`),
         // Fetch warning markers with minimum confidence threshold
