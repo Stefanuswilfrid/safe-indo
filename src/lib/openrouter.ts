@@ -737,12 +737,11 @@ IMPORTANT: Return ONLY the JSON object, no markdown, no explanation, no backtick
   }
 }
 
-// Wrapper function that applies validation to all results
+// Wrapper function for TikTok detailed location extraction.
+// scraper can be repurposed for other regions (e.g. Melbourne incidents).
 export async function extractDetailedLocationFromTikTok(videoData: any): Promise<DetailedLocationResult> {
   const result = await extractDetailedLocationFromTikTokInternal(videoData);
-
-  // Apply location validation to prevent obviously wrong mappings
-  return applyLocationValidation(result);
+  return result;
 }
 
 // Debug function to test OpenRouter connection

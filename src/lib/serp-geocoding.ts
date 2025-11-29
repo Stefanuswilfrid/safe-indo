@@ -17,8 +17,9 @@ export async function geocodeWithSerp(location: string): Promise<SerpGeocodeResu
       };
     }
 
-    // Use SERP API to search for the location on Google Maps
-    const searchQuery = `${location} Indonesia`;
+    // Use SERP API to search for the location on Google Maps.
+    // we keep it generic so the city/suburb name in `location` drives the result.
+    const searchQuery = location;
     const url = `https://SERPAPI.com/search.json?engine=google_maps&q=${encodeURIComponent(searchQuery)}&api_key=${SERP_APIKey}`;
 
     const response = await fetch(url);

@@ -24,11 +24,23 @@ async function scrapeTikTokVideos(dateToday: string): Promise<Video[]> {
     console.log(`📅 Today's date: ${dateToday}`);
     console.log(`🔍 Searching for Melbourne incidents...`);
 
-    // Configurable keyword template. Replace {date} with today's date.
-    // Example: "melbourne incident {date}"
-    const keywordTemplate = process.env.SCRAPE_KEYWORD_TEMPLATE || 'melbourne incident {date}';
-    const keyword = keywordTemplate.replace('{date}', dateToday);
-    console.log(`🔎 Searching: "${keyword}"`);
+    // Configurable keyword list.
+    // - SCRAPE_KEYWORDS: pipe-separated list, e.g.
+    //   "melbourne incident|melbourne stabbing|melbourne crash"
+    // - {date} placeholder (optional) will be replaced with today's date.
+    const rawKeywords = process.env.SCRAPE_KEYWORDS;
+    const baseKeywords = (rawKeywords
+      ? rawKeywords.split('|')
+      : [
+          'melbourne incident',
+          'melbourne stabbing',
+          'melbourne crash',
+          'melbourne car accident',
+          'melbourne shooting',
+          'melbourne fight'
+        ]).map(k => k.trim()).filter(Boolean);
+
+    console.log('🔎 Active search keywords:', baseKeywords);
 
     // Apply rate limiting before making API calls
     const rateLimitResult = await checkRateLimit(scrapeRateLimiter, 'tiktok-scrape-check');
@@ -38,32 +50,42 @@ async function scrapeTikTokVideos(dateToday: string): Promise<Video[]> {
 
     // Determine if it's peak hour and choose appropriate strategy
     const isPeakHour = rapidAPIManager.isPeakHour();
-    let results: ScrapeResult[];
-    
-    if (isPeakHour) {
-      console.log(`🔥 Peak hour detected - using parallel calls for 90 videos`);
-      results = await rapidAPIManager.makeParallelCalls(keyword, 90);
-    } else {
-      console.log(`💤 Conserve hour detected - using sequential calls for 60 videos`);
-      results = await rapidAPIManager.makeSequentialCalls(keyword, 60);
-    }
+    const targetPerKeyword = isPeakHour ? 30 : 20; // keep total requests reasonable
 
-    // Combine all successful results
+    // Combine all successful results across all keywords
+    const allResults: ScrapeResult[] = [];
     const allVideos: Video[] = [];
     let totalVideosFound = 0;
 
-    for (const result of results) {
-      if (result.success && result.data?.code === 0 && result.data?.data?.videos) {
-        const videos = result.data.data.videos;
-        allVideos.push(...videos);
-        totalVideosFound += videos.length;
-        console.log(`✅ ${result.keyUsed}: Found ${videos.length} videos`);
+    for (const baseKeyword of baseKeywords) {
+      const keyword = baseKeyword.replace('{date}', dateToday);
+      console.log(`🔎 Searching TikTok for: "${keyword}"`);
+
+      let resultsForKeyword: ScrapeResult[];
+
+      if (isPeakHour) {
+        console.log(`🔥 Peak hour detected - using parallel calls (~${targetPerKeyword} videos) for "${keyword}"`);
+        resultsForKeyword = await rapidAPIManager.makeParallelCalls(keyword, targetPerKeyword);
       } else {
-        console.log(`❌ ${result.keyUsed}: ${result.error || 'No videos found'}`);
+        console.log(`💤 Conserve hour detected - using sequential calls (~${targetPerKeyword} videos) for "${keyword}"`);
+        resultsForKeyword = await rapidAPIManager.makeSequentialCalls(keyword, targetPerKeyword);
+      }
+
+      allResults.push(...resultsForKeyword);
+
+      for (const result of resultsForKeyword) {
+        if (result.success && result.data?.code === 0 && result.data?.data?.videos) {
+          const videos = result.data.data.videos;
+          allVideos.push(...videos);
+          totalVideosFound += videos.length;
+          console.log(`✅ ${result.keyUsed} [${keyword}]: Found ${videos.length} videos`);
+        } else {
+          console.log(`❌ ${result.keyUsed} [${keyword}]: ${result.error || 'No videos found'}`);
+        }
       }
     }
 
-    console.log(`🎯 Total videos collected: ${totalVideosFound} from ${results.length} API calls`);
+    console.log(`🎯 Total videos collected: ${totalVideosFound} from ${allResults.length} API calls across ${baseKeywords.length} keywords`);
     
     // Remove duplicates based on video_id
     const uniqueVideos = allVideos.filter((video, index, self) => 

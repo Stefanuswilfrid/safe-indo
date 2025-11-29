@@ -33,12 +33,14 @@ async function geocodeWithGoogleMaps(location: string): Promise<GoogleMapsGeocod
       };
     }
 
-    // Use Google Geocoding API with Indonesian bias
+    // Use Google Geocoding API with configurable regional bias
+    const language = process.env.GEOCODE_LANGUAGE || 'en';
+    const region = process.env.GEOCODE_REGION || 'au'; // default to Australia for Melbourne incidents
     const params = new URLSearchParams({
       address: location,
       key: apiKey,
-      language: 'id',
-      region: 'id' // Bias towards Indonesia
+      language,
+      region
     });
 
     const response = await fetch(
