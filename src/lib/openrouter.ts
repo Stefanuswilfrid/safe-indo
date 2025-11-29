@@ -43,7 +43,7 @@ Examples:
 - "Bentrok antara mahasiswa dan polisi di Yogyakarta" → "Yogyakarta"`;
 
     const completion = await client.chat.completions.create({
-      model: "gpt-oss-20b:free",
+      model: process.env.OPENAI_LOCATION_MODEL || "gpt-4o-mini",
       messages: [
         {
           role: "user",
@@ -371,7 +371,7 @@ EXAMPLES:
 Return ONLY valid JSON:`;
 
     const textCompletion = await client.chat.completions.create({
-      model: "gpt-oss-20b:free",
+      model: process.env.OPENAI_LOCATION_MODEL || "gpt-4o-mini",
       messages: [
         {
           role: "user",
@@ -489,7 +489,7 @@ What exact location is shown in this image? Include the city and province if ide
 
       try {
         const imageCompletion = await client.chat.completions.create({
-          model: "google/gemini-2.5-flash-lite",
+          model: process.env.OPENAI_LOCATION_MODEL || "gpt-4o-mini",
           messages: [
             {
               role: "user",
@@ -529,7 +529,7 @@ If no clear location, return: {"exact_location": null, "confidence": 0.0}
 IMPORTANT: Return ONLY the JSON object, no markdown, no explanation, no backticks.`;
 
           const structuredCompletion = await client.chat.completions.create({
-            model: "gpt-oss-20b:free",
+            model: process.env.OPENAI_LOCATION_MODEL || "gpt-4o-mini",
             messages: [
               {
                 role: "user",
@@ -746,7 +746,7 @@ export async function testOpenRouterConnection(): Promise<{success: boolean, err
     });
 
     const completion = await client.chat.completions.create({
-      model: "meta-llama/llama-3.2-3b-instruct:free",
+      model: process.env.OPENAI_LOCATION_MODEL || "gpt-4o-mini",
       messages: [{ role: "user", content: 'Hello' }],
       max_tokens: 5,
       temperature: 0.1
@@ -839,7 +839,7 @@ Examples:
 - "Aksi tolak UU di DPRD Jabar Bandung" → "DPRD Jawa Barat, Bandung"`;
 
     const completion = await client.chat.completions.create({
-      model: "gpt-oss-20b:free",
+      model: process.env.OPENAI_LOCATION_MODEL || "gpt-4o-mini",
       messages: [
         {
           role: "user",

@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
   // }
 
   try {
-    console.log('🧪 Testing OpenRouter connection with gpt-oss-20b:free...');
+    console.log('🧪 Testing OpenAI connection with location model...');
 
     const result = await testOpenRouterConnection();
 
