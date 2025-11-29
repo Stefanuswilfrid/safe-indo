@@ -3,39 +3,18 @@
     "outputDirectory": ".next",
     "framework": "nextjs",
     "functions": {
-      "src/app/api/**/*.ts": {
-        "maxDuration": 800
-      },
-      "src/app/api/scrape/cron/route.ts": {
-        "maxDuration": 800
-      },
-      "src/app/api/scrape/tiktok/route.ts": {
-        "maxDuration": 800
-      },
-      "src/app/api/rss/fetch/route.ts": {
-        "maxDuration": 800
-      },
-      "src/app/api/rss/cron/route.ts": {
-        "maxDuration": 800
-      }
+      "src/app/api/**/route.ts": { "maxDuration": 800 },
+      "src/app/api/rss/fetch/route.ts": { "maxDuration": 800 },
+      "src/app/api/rss/cron/route.ts": { "maxDuration": 800 },
+      "src/app/api/scrape/cron/route.ts": { "maxDuration": 800 }
     },
     "crons": [
-      {
-        "path": "/api/scrape/tiktok",
-        "schedule": "0 12-23,0-1 * * *"
-      },
-      {
-        "path": "/api/scrape/tiktok",
-        "schedule": "0 2,4,6,8,10 * * *"
-      },
-      {
-        "path": "/api/rss/cron",
-        "schedule": "*/20 * * * *"
-      }
+      { "path": "/api/scrape/cron", "schedule": "0 12-23,0-1 * * *" },
+      { "path": "/api/scrape/cron", "schedule": "0 2,4,6,8,10 * * *" },
+      { "path": "/api/rss/cron", "schedule": "*/20 * * * *" }
     ],
     "env": {
       "PRISMA_GENERATE_DATAPROXY": "true",
       "PRISMA_GENERATE_SKIP_DOWNLOAD": "true"
     }
-  }
-  
+}
