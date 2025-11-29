@@ -268,6 +268,14 @@ export async function GET(request: NextRequest) {
   const corsResponse = handleCors(request);
   if (corsResponse) return corsResponse;
 
+  // Parse optional limit from query (used by cron wrapper to cap work)
+  const requestUrl = new URL(request.url);
+  const limitParam = requestUrl.searchParams.get('limit');
+  const requestedLimit = limitParam ? Number.parseInt(limitParam, 10) : undefined;
+  const safeLimit = requestedLimit && Number.isFinite(requestedLimit)
+    ? Math.max(1, Math.min(50, requestedLimit))
+    : undefined;
+
   // Check authentication: Vercel cron jobs or manual API calls
   const authHeader = request.headers.get('authorization');
   const isVercelCronJob = authHeader === `Bearer ${process.env.CRON_SECRET}`;
@@ -279,6 +287,7 @@ export async function GET(request: NextRequest) {
   console.log(`  - CRON_SECRET match: ${isVercelCronJob}`);
   console.log(`  - x-internal-cron: ${isInternalCronCall}`);
   console.log(`  - x-scrape-secret: ${scrapeSecret ? 'Present' : 'Missing'}`);
+  console.log(`  - limit: ${safeLimit ?? 'none'}`);
 
   // Allow Vercel cron jobs with CRON_SECRET
   if (isVercelCronJob) {
@@ -371,9 +380,18 @@ export async function GET(request: NextRequest) {
     const dateToday = `${day}/${month}/${year}`;
 
     // Scrape TikTok videos with simple keyword
-    const videos = await scrapeTikTokVideos(dateToday);
+    let videos = await scrapeTikTokVideos(dateToday);
     console.log(`📹 Found ${videos.length} TikTok videos for "lokasi demo ${dateToday}"`);
-    console.log(`⚡ Processing with concurrent batches (3 videos per batch)`);
+
+    // If called from cron, limit processing to keep execution under platform limits
+    if (isInternalCronCall && safeLimit) {
+      videos = videos.slice(0, safeLimit);
+      console.log(`✂️  Limiting processing to first ${videos.length} videos due to cron limit`);
+    }
+
+    // Choose a smaller batch size for cron-triggered runs
+    const dynamicBatchSize = isInternalCronCall ? 2 : 3;
+    console.log(`⚡ Processing with concurrent batches (${dynamicBatchSize} videos per batch)`);
 
     // Update progress with total count
     scrapingProgress.totalVideos = videos.length;
@@ -383,7 +401,7 @@ export async function GET(request: NextRequest) {
     let processedCount = 0;
 
     // Process videos in concurrent batches to avoid overwhelming APIs
-    const BATCH_SIZE = 3; // Process 3 videos concurrently
+    const BATCH_SIZE = dynamicBatchSize; // Process N videos concurrently
     const DELAY_BETWEEN_BATCHES = 2000; // 2 second delay between batches
 
     for (let i = 0; i < videos.length; i += BATCH_SIZE) {

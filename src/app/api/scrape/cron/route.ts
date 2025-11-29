@@ -36,18 +36,22 @@ export async function GET(request: NextRequest) {
       ? 'https://safe-indo.vercel.app'  // Your actual custom domain
       : 'http://localhost:3000';
 
+    // Limit work per run to fit within function limits
+    const limit = process.env.SCRAPE_CRON_LIMIT || '10';
+
     console.log('🔗 Calling main scraping endpoint...');
-    console.log(`📍 Target URL: ${baseUrl}/api/scrape/tiktok`);
+    console.log(`📍 Target URL: ${baseUrl}/api/scrape/tiktok?limit=${limit}`);
     console.log('📋 Request headers being sent:');
     console.log(`  - x-internal-cron: true`);
     console.log(`  - x-scrape-secret: ${scrapeSecret ? 'Configured' : 'Missing'}`);
     console.log(`  - user-agent: vercel-cron/1.0`);
+    console.log(`  - limit: ${limit}`);
 
     // Call the main scraping endpoint with proper authentication
     let response: Response;
     
     try {
-      response = await fetch(`${baseUrl}/api/scrape/tiktok`, {
+      response = await fetch(`${baseUrl}/api/scrape/tiktok?limit=${encodeURIComponent(limit)}`, {
         method: 'GET',
         headers: {
           'x-internal-cron': 'true', // Mark this as an internal cron call
