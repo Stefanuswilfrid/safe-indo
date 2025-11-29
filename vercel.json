@@ -9,9 +9,8 @@
       "src/app/api/scrape/cron/route.ts": { "maxDuration": 60 }
     },
     "crons": [
-      { "path": "/api/scrape/cron", "schedule": "0 12-23,0-1 * * *" },
-      { "path": "/api/scrape/cron", "schedule": "0 2,4,6,8,10 * * *" },
-      { "path": "/api/rss/cron", "schedule": "*/20 * * * *" }
+      { "path": "/api/rss/cron", "schedule": "0 0 * * *" },
+      { "path": "/api/scrape/cron", "schedule": "0 12 * * *" }
     ],
     "env": {
       "PRISMA_GENERATE_DATAPROXY": "true",
