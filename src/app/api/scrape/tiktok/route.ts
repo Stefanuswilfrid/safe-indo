@@ -32,10 +32,14 @@ async function scrapeTikTokVideos(dateToday: string): Promise<Video[]> {
     const baseKeywords = (rawKeywords
       ? rawKeywords.split('|')
       : [
+          // Very broad control keyword to almost guarantee some results,
+          // useful to confirm the pipeline is working end-to-end.
+          'melbourne',
+          // More targeted incident-style keywords
           'melbourne incident',
-          'melbourne stabbing',
           'melbourne crash',
           'melbourne car accident',
+          'melbourne stabbing',
           'melbourne shooting',
           'melbourne fight'
         ]).map(k => k.trim()).filter(Boolean);
