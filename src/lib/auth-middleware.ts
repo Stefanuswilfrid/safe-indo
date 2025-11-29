@@ -1,15 +1,46 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export function authenticateRequest(request: NextRequest): {
-  isValid: boolean;
-  error?: string;
-} {
-  const authHeader = request.headers.get("authorization");
-  const apiKey = request.headers.get("x-api-key");
+export function authenticateScrapeRequest(request: NextRequest): { isValid: boolean; error?: string } {
+  const scrapeSecret = process.env.SCRAPE_SECRET;
+
+  if (!scrapeSecret) {
+    console.error('❌ SCRAPE_SECRET environment variable is not set!');
+    return {
+      isValid: false,
+      error: 'Server configuration error: SCRAPE_SECRET not set'
+    };
+  }
+
+  const providedSecret = request.headers.get('x-scrape-secret');
+
+  if (!providedSecret) {
+    return {
+      isValid: false,
+      error: 'Missing scrape secret. Include in x-scrape-secret header'
+    };
+  }
+
+  // Trim whitespace and compare
+  const trimmedProvided = providedSecret.trim();
+  const trimmedSecret = scrapeSecret.trim();
+
+  if (trimmedProvided !== trimmedSecret) {
+    return {
+      isValid: false,
+      error: 'Invalid scrape secret'
+    };
+  }
+
+  return { isValid: true };
+}
+
+// Legacy API Key authentication middleware (for backward compatibility)
+export function authenticateRequest(request: NextRequest): { isValid: boolean; error?: string } {
+  const authHeader = request.headers.get('authorization');
+  const apiKey = request.headers.get('x-api-key');
 
   // Check for API key in header or Authorization header
-  const providedKey =
-    apiKey || (authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : null);
+  const providedKey = apiKey || (authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null);
 
   if (!providedKey) {
     return {
@@ -18,15 +49,25 @@ export function authenticateRequest(request: NextRequest): {
     };
   }
 
-  const trimmedProvided = providedKey.trim();
-  //   const trimmedSecret = secretKey.trim();
+  // For legacy compatibility, also check SCRAPE_SECRET
+  const secretKey = process.env.SCRAPE_SECRET || process.env.API_SECRET_KEY;
+  if (!secretKey) {
+    return {
+      isValid: false,
+      error: 'Server configuration error: No authentication key set'
+    };
+  }
 
-  //   if (trimmedProvided !== trimmedSecret) {
-  //     return {
-  //       isValid: false,
-  //       error: 'Invalid API key'
-  //     };
-  //   }
+  // Trim whitespace and compare
+  const trimmedProvided = providedKey.trim();
+  const trimmedSecret = secretKey.trim();
+
+  if (trimmedProvided !== trimmedSecret) {
+    return {
+      isValid: false,
+      error: 'Invalid API key'
+    };
+  }
 
   return { isValid: true };
 }
