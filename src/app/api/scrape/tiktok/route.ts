@@ -78,13 +78,18 @@ async function scrapeTikTokVideos(dateToday: string): Promise<Video[]> {
       allResults.push(...resultsForKeyword);
 
       for (const result of resultsForKeyword) {
-        if (result.success && result.data?.code === 0 && result.data?.data?.videos) {
-          const videos = result.data.data.videos;
+        // Some providers use different 'code' semantics; rely on presence of videos instead.
+        const videos = result.data?.data?.videos;
+
+        if (result.success && Array.isArray(videos) && videos.length > 0) {
           allVideos.push(...videos);
           totalVideosFound += videos.length;
           console.log(`✅ ${result.keyUsed} [${keyword}]: Found ${videos.length} videos`);
         } else {
-          console.log(`❌ ${result.keyUsed} [${keyword}]: ${result.error || 'No videos found'}`);
+          console.log(`❌ ${result.keyUsed} [${keyword}]: ${result.error || 'No videos found or empty response'}`);
+          if (result.success) {
+            console.log(`   Raw provider data (truncated):`, JSON.stringify(result.data).slice(0, 500));
+          }
         }
       }
     }
