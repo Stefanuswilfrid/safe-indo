@@ -58,7 +58,7 @@ export const MapOverlay: React.FC<MapOverlayProps> = ({
               textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)',
               textAlign: 'left'
             }}>
-              Safe Indonesia
+              Safe Melbourne
               <span style={{
                   fontSize: '11px',
                   color: '#9ca3af'

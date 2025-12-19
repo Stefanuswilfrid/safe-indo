@@ -76,7 +76,7 @@ export async function GET(request: NextRequest) {
   
   return NextResponse.json({
     success: true,
-    message: "Safe Indonesia Chat API - POST your questions here!",
+    message: "Safe Melbourne Chat API - POST your questions here!",
     example: {
       message: "ada demo dimana?",
       context: {
@@ -372,7 +372,7 @@ async function generateChatResponse(message: string, events: EventData[], hoaxRe
       similarity: hoax.similarity || 0.5
     })) : [];
 
-    const systemPrompt = `Kamu adalah asisten informasi keamanan untuk Safe Indonesia.
+    const systemPrompt = `Kamu adalah asisten informasi keamanan untuk Safe Melbourne.
 Bantu pengguna dengan pertanyaan tentang demonstrasi, kerusuhan, dan situasi keamanan di Indonesia.
 
 INFORMASI TERBARU DARI DATABASE (${events.length} kejadian dalam 6 jam terakhir):

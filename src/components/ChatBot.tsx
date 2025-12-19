@@ -23,7 +23,7 @@ export default function ChatBot() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: 'Halo! Saya adalah asisten Safe Indonesia. Anda bisa bertanya tentang demonstrasi, kerusuhan, atau situasi keamanan terkini. Coba tanyakan "ada demo dimana?" "Berikan hoax tersebar hari ini."',
+      text: 'Hi! I’m the Safe Melbourne assistant. You can ask about protests, incidents, road closures, or current safety updates. Try asking: “Where are protests happening?” or “What incidents were reported today?”',
       sender: 'bot',
       timestamp: new Date()
     }
@@ -206,7 +206,7 @@ export default function ChatBot() {
                   fontWeight: '600',
                   color: '#ffffff'
                 }}>
-                  Safe Indonesia Chat
+                  Safe Melbourne Chat
                 </h2>
                 <p style={{
                   margin: '4px 0 0 0',
@@ -226,7 +226,7 @@ export default function ChatBot() {
                   fontWeight: '600',
                   color: '#ffffff'
                 }}>
-                  Safe Indonesia AI
+                  Safe Melbourne AI
                 </h3>
                 <p style={{
                   margin: '0',

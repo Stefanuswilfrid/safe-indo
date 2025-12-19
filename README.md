@@ -11,14 +11,6 @@ A comprehensive safety monitoring platform for Indonesia that tracks protests, h
 - **🔍 Hoax Detection**: Monitor and search fact-checked hoax information
 - **📱 Mobile-First**: Optimized for mobile devices
 
-## 🏗️ Architecture
-
-<div align="center">
-  <img src="https://safe.100ai.id/system.png" alt="Safe Indonesia System Architecture" width="800" />
-  <p><em>System Architecture Overview</em></p>
-</div>
-
-
 ## 🛠️ Tech Stack
 
 - **Frontend**: Next.js 15, React 19, TypeScript, TailwindCSS
@@ -133,5 +125,5 @@ MIT License - see LICENSE file for details.
 
 ---
 
-**Safe Indonesia** - Keeping communities informed and safe through real-time monitoring and AI-powered insights.
+**Safe Melbourne** - Keeping communities informed and safe through real-time monitoring and AI-powered insights.
 
