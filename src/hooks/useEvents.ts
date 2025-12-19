@@ -5,7 +5,7 @@ export const useEvents = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [timeFilter, setTimeFilter] = useState<number>(72); // Default to last 72 hours (3 days)
+  const [timeFilter, setTimeFilter] = useState<number>(0); // Default to All time
   const [eventFilter, setEventFilter] = useState<'all' | 'warnings' | 'road_closures' | 'protests'>('all');
   const eventsLoadedRef = useRef<boolean>(false);
 
